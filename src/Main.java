@@ -8,6 +8,9 @@ public class Main {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(500,500);
 
+        GameField gameField = new GameField();
+        frame.add(gameField);
+
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.setVisible(true);
