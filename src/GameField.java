@@ -23,13 +23,15 @@ public class GameField extends JPanel implements ActionListener {
 
     // Initial game parameters
     private boolean isRunning = false;
-    private final int bodyParts = 6;
+    private int bodyParts = 6;
+    private int applesEaten;
     private char direction = 'R'; // Direction of movement
 
     public GameField() {
         isRunning = true;
         setFocusable(true);
         addKeyListener(new MyKeyAdapter());
+        newApple();
         timer = new Timer(DELAY, this);
         timer.start();
     }
@@ -71,9 +73,9 @@ public class GameField extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        newApple();
         move();
         checkCollisions();
+        checkApple();
         repaint();
     }
 
@@ -127,6 +129,14 @@ public class GameField extends JPanel implements ActionListener {
             case 'R':
                 snakeX[0] += UNIT_SIZE;
                 break;
+        }
+    }
+    public void checkApple() {
+        // Check if the snake has eaten the apple
+        if (snakeX[0] == appleX && snakeY[0] == appleY) {
+            bodyParts++;
+            applesEaten++;
+            newApple();
         }
     }
 
