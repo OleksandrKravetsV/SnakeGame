@@ -6,7 +6,7 @@ public class Main {
 
         frame.setTitle("Snake Game");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setSize(800,500);
+        frame.setSize(800,600);
 
         GameField gameField = new GameField();
         frame.add(gameField);

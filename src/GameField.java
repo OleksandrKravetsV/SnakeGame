@@ -7,8 +7,8 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 
 public class GameField extends JPanel implements ActionListener {
-    private static final int WIDTH = 550;
-    private static final int HEIGHT = 350;
+    private static final int WIDTH = 600;
+    private static final int HEIGHT = 400;
     private static final int UNIT_SIZE = 20;
     private static final int GAME_UNITS = (WIDTH * HEIGHT) / (UNIT_SIZE * UNIT_SIZE); // Total number of game cells on the field
     private static final int DELAY = 50;
@@ -22,10 +22,12 @@ public class GameField extends JPanel implements ActionListener {
     private int appleY;
 
     // Initial game parameters
+    private boolean isRunning = false;
     private final int bodyParts = 6;
     private char direction = 'R'; // Direction of movement
 
     public GameField() {
+        isRunning = true;
         setFocusable(true);
         addKeyListener(new MyKeyAdapter());
         timer = new Timer(DELAY, this);
@@ -43,25 +45,27 @@ public class GameField extends JPanel implements ActionListener {
     }
 
     public void paintGameField(Graphics g) {
-        setBackground(Color.black);
+        if (isRunning) {
+            setBackground(Color.black);
 
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.white);
-        g2d.setStroke(new BasicStroke(4));
-        g2d.drawRect(50, 50, WIDTH, HEIGHT);
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setColor(Color.white);
+            g2d.setStroke(new BasicStroke(4));
+            g2d.drawRect(100, 100, WIDTH, HEIGHT);
 
-        // Draw apple
-        g.setColor(Color.red);
-        g.fillOval(appleX + 50, appleY + 50, UNIT_SIZE, UNIT_SIZE);
+            // Draw apple
+            g.setColor(Color.red);
+            g.fillOval(appleX + 100, appleY + 100, UNIT_SIZE, UNIT_SIZE);
 
-        // Draw snake segments
-        for (int i = 0; i < bodyParts; i++) {
-            if (i == 0) {
-                g.setColor(new Color(30, 150, 50));
-            } else {
-                g.setColor(Color.green);
+            // Draw snake segments
+            for (int i = 0; i < bodyParts; i++) {
+                if (i == 0) {
+                    g.setColor(new Color(30, 150, 50));
+                } else {
+                    g.setColor(Color.green);
+                }
+                g.fillRect(snakeX[i] + 100, snakeY[i] + 100, UNIT_SIZE, UNIT_SIZE);
             }
-            g.fillRect(snakeX[i] + 100, snakeY[i] + 100, UNIT_SIZE, UNIT_SIZE);
         }
     }
 
@@ -69,6 +73,7 @@ public class GameField extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         newApple();
         move();
+        checkCollisions();
         repaint();
     }
 
@@ -122,6 +127,25 @@ public class GameField extends JPanel implements ActionListener {
             case 'R':
                 snakeX[0] += UNIT_SIZE;
                 break;
+        }
+    }
+
+    public void checkCollisions() {
+        // Stop game on collision
+        if (!isRunning) {
+            timer.stop();
+        }
+
+        // Check for collision with itself
+        for (int i = bodyParts; i > 0; i--) {
+            if (snakeX[0] == snakeX[i] && snakeY[0] == snakeY[i]) {
+                isRunning = false;
+            }
+        }
+
+        // Wall collision check
+        if (snakeX[0] < 0 || snakeX[0] >= WIDTH || snakeY[0] < 0 || snakeY[0] >= HEIGHT) {
+            isRunning = false;
         }
     }
 }
