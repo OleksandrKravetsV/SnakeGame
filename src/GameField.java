@@ -11,7 +11,7 @@ public class GameField extends JPanel implements ActionListener {
     private static final int HEIGHT = 400;
     private static final int UNIT_SIZE = 20;
     private static final int GAME_UNITS = (WIDTH * HEIGHT) / (UNIT_SIZE * UNIT_SIZE); // Total number of game cells on the field
-    private static final int DELAY = 50;
+    private static int DELAY = 200;
     private final Timer timer;
 
     // For storing coordinates of snake segments
@@ -131,12 +131,23 @@ public class GameField extends JPanel implements ActionListener {
                 break;
         }
     }
+
+    // Increase DELAY after +applesEaten
+    public int lvlUp(){
+        if (applesEaten > 0) {
+            DELAY = DELAY - 10;
+            timer.setDelay(DELAY);
+        }
+        return DELAY;
+    }
+
     public void checkApple() {
         // Check if the snake has eaten the apple
         if (snakeX[0] == appleX && snakeY[0] == appleY) {
             bodyParts++;
             applesEaten++;
             newApple();
+            lvlUp();
         }
     }
 
