@@ -68,6 +68,11 @@ public class GameField extends JPanel implements ActionListener {
                 }
                 g.fillRect(snakeX[i] + 100, snakeY[i] + 100, UNIT_SIZE, UNIT_SIZE);
             }
+
+            // Draw score counter
+            g.setFont(new Font("Arial", Font.BOLD, 40));
+            FontMetrics metrics = getFontMetrics(g.getFont());
+            g.drawString("score: " + applesEaten, (getWidth() - metrics.stringWidth("Score: " + applesEaten)) / 2, metrics.getAscent() + 25);
         }
     }
 
