@@ -73,6 +73,8 @@ public class GameField extends JPanel implements ActionListener {
             g.setFont(new Font("Arial", Font.BOLD, 40));
             FontMetrics metrics = getFontMetrics(g.getFont());
             g.drawString("score: " + applesEaten, (getWidth() - metrics.stringWidth("Score: " + applesEaten)) / 2, metrics.getAscent() + 25);
+        } else {
+            gameOver(g);
         }
     }
 
@@ -173,5 +175,17 @@ public class GameField extends JPanel implements ActionListener {
         if (snakeX[0] < 0 || snakeX[0] >= WIDTH || snakeY[0] < 0 || snakeY[0] >= HEIGHT) {
             isRunning = false;
         }
+    }
+
+    // The display of a game over message
+    public void gameOver(Graphics g) {
+        g.setColor(Color.green);
+        g.setFont(new Font("Arial", Font.BOLD, 60));
+        FontMetrics metrics;
+        g.drawString("Game Over", (getWidth() - g.getFontMetrics().stringWidth("Game Over")) / 2, HEIGHT / 2);
+
+        g.setFont(new Font("Arial", Font.BOLD, 40));
+        metrics = getFontMetrics(g.getFont());
+        g.drawString("score: " + applesEaten, (getWidth() - metrics.stringWidth("Score: " + applesEaten)) / 2, (getHeight() - g.getFontMetrics().getHeight()) / 2 + g.getFontMetrics().getAscent());
     }
 }
