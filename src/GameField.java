@@ -89,6 +89,17 @@ public class GameField extends JPanel implements ActionListener {
     private class MyKeyAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
+            //pause
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_SPACE:
+                    if (isRunning) {
+                        timer.stop();
+                    } else {
+                        timer.start();
+                    }
+                    isRunning = !isRunning;
+                    break;
+            }
 
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
