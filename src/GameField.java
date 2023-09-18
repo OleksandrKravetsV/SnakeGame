@@ -88,7 +88,11 @@ public class GameField extends JPanel implements ActionListener {
 
             g.setFont(new Font("Arial", Font.BOLD, 40));
             metrics = getFontMetrics(g.getFont());
-            g.drawString("score: " + applesEaten, (getWidth() - metrics.stringWidth("Score: " + applesEaten)) / 2, (getHeight() - g.getFontMetrics().getHeight()) / 2 + g.getFontMetrics().getAscent());
+            g.drawString("Score: " + applesEaten, (getWidth() - metrics.stringWidth("Score: " + applesEaten)) / 2, (getHeight() - g.getFontMetrics().getHeight()) / 2 + g.getFontMetrics().getAscent());
+
+            g.setFont(new Font("Arial", Font.BOLD, 20));
+            g.setColor(Color.green);
+            g.drawString("Press Enter to restart", (getWidth() - g.getFontMetrics().stringWidth("Press Enter to restart")) / 2, (getHeight() + g.getFontMetrics().getHeight()) / 2 + g.getFontMetrics().getAscent() +200);
         }
     }
 
@@ -116,6 +120,11 @@ public class GameField extends JPanel implements ActionListener {
                     timer.start();
                 }
                 isRunning = !isRunning;
+            }
+
+            // restart game
+            if (!isRunning && e.getKeyCode() == KeyEvent.VK_ENTER) {
+                restartGame();
             }
 
             switch (e.getKeyCode()) {
@@ -195,6 +204,7 @@ public class GameField extends JPanel implements ActionListener {
         for (int i = bodyParts; i > 0; i--) {
             if (snakeX[0] == snakeX[i] && snakeY[0] == snakeY[i]) {
                 isRunning = false;
+                break;
             }
         }
 
@@ -202,5 +212,25 @@ public class GameField extends JPanel implements ActionListener {
         if (snakeX[0] < 0 || snakeX[0] >= WIDTH || snakeY[0] < 0 || snakeY[0] >= HEIGHT) {
             isRunning = false;
         }
+    }
+
+    public void restartGame() {
+        // Reset game parameters
+        isRunning = true;
+        isWaitingForStart = false;
+        bodyParts = 6;
+        applesEaten = 0;
+        direction = 'R';
+        DELAY = 200;
+        timer.setDelay(DELAY);
+
+        // Reset snake and apple positions
+        for (int i = 0; i < bodyParts; i++) {
+            snakeX[i] = 0;
+            snakeY[i] = 0;
+        }
+
+        newApple();
+        timer.restart();
     }
 }
