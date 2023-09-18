@@ -23,6 +23,7 @@ public class GameField extends JPanel implements ActionListener {
 
     // Initial game parameters
     private boolean isRunning = false;
+    private boolean isWaitingForStart = true;
     private int bodyParts = 6;
     private int applesEaten;
     private char direction = 'R'; // Direction of movement
@@ -47,9 +48,14 @@ public class GameField extends JPanel implements ActionListener {
     }
 
     public void paintGameField(Graphics g) {
-        if (isRunning) {
-            setBackground(Color.black);
+        setBackground(Color.black);
 
+        if (isWaitingForStart) {
+            // Display a game start message
+            g.setColor(Color.green);
+            g.setFont(new Font("Arial", Font.BOLD, 60));
+            g.drawString("Press any key to start", (getWidth() - g.getFontMetrics().stringWidth("Press any key to start")) / 2, HEIGHT / 2);
+        } else if (isRunning) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setColor(Color.white);
             g2d.setStroke(new BasicStroke(4));
@@ -74,7 +80,15 @@ public class GameField extends JPanel implements ActionListener {
             FontMetrics metrics = getFontMetrics(g.getFont());
             g.drawString("score: " + applesEaten, (getWidth() - metrics.stringWidth("Score: " + applesEaten)) / 2, metrics.getAscent() + 25);
         } else {
-            gameOver(g);
+            // The display of a game over message
+            g.setColor(Color.green);
+            g.setFont(new Font("Arial", Font.BOLD, 60));
+            FontMetrics metrics;
+            g.drawString("Game Over", (getWidth() - g.getFontMetrics().stringWidth("Game Over")) / 2, HEIGHT / 2);
+
+            g.setFont(new Font("Arial", Font.BOLD, 40));
+            metrics = getFontMetrics(g.getFont());
+            g.drawString("score: " + applesEaten, (getWidth() - metrics.stringWidth("Score: " + applesEaten)) / 2, (getHeight() - g.getFontMetrics().getHeight()) / 2 + g.getFontMetrics().getAscent());
         }
     }
 
@@ -89,16 +103,19 @@ public class GameField extends JPanel implements ActionListener {
     private class MyKeyAdapter extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent e) {
+            //start menu
+            if (isWaitingForStart) {
+                isWaitingForStart = false;
+            }
+
             //pause
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_SPACE:
-                    if (isRunning) {
-                        timer.stop();
-                    } else {
-                        timer.start();
-                    }
-                    isRunning = !isRunning;
-                    break;
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                if (isRunning) {
+                    timer.stop();
+                } else {
+                    timer.start();
+                }
+                isRunning = !isRunning;
             }
 
             switch (e.getKeyCode()) {
@@ -151,12 +168,11 @@ public class GameField extends JPanel implements ActionListener {
     }
 
     // Increase DELAY after +applesEaten
-    public int lvlUp(){
+    public void lvlUp(){
         if (applesEaten > 0) {
             DELAY = DELAY - 10;
             timer.setDelay(DELAY);
         }
-        return DELAY;
     }
 
     public void checkApple() {
@@ -186,17 +202,5 @@ public class GameField extends JPanel implements ActionListener {
         if (snakeX[0] < 0 || snakeX[0] >= WIDTH || snakeY[0] < 0 || snakeY[0] >= HEIGHT) {
             isRunning = false;
         }
-    }
-
-    // The display of a game over message
-    public void gameOver(Graphics g) {
-        g.setColor(Color.green);
-        g.setFont(new Font("Arial", Font.BOLD, 60));
-        FontMetrics metrics;
-        g.drawString("Game Over", (getWidth() - g.getFontMetrics().stringWidth("Game Over")) / 2, HEIGHT / 2);
-
-        g.setFont(new Font("Arial", Font.BOLD, 40));
-        metrics = getFontMetrics(g.getFont());
-        g.drawString("score: " + applesEaten, (getWidth() - metrics.stringWidth("Score: " + applesEaten)) / 2, (getHeight() - g.getFontMetrics().getHeight()) / 2 + g.getFontMetrics().getAscent());
     }
 }
